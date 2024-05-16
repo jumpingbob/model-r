@@ -9,8 +9,9 @@ uploaded_file = st.file_uploader("Pickleファイルを選択してください"
 
 if uploaded_file is not None:
     try:
-        # バイナリモードでファイルを読み込み
-        data = pickle.load(uploaded_file)
+        # アップロードされたファイルの内容をバイナリで読み込み
+        file_content = uploaded_file.read()
+        data = pickle.loads(file_content)
 
         # データの型に応じて表示
         if isinstance(data, dict):
