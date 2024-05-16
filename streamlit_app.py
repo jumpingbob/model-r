@@ -6,7 +6,8 @@ import tempfile
 st.title('回帰モデルの特徴量重要度')
 
 # 一時ファイルからモデルを読み込む
-model = load_model('test_model.pkl')
+path = 'test_model.pkl'
+model = load_model(path)
 # 特徴量重要度を取得
 feature_importances = model.feature_importances_
 # 特徴量名を取得
