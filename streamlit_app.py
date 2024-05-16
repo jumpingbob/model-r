@@ -1,7 +1,16 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+from pycaret.classification import *
 from pycaret.regression import *
-import os
+from sklearn.tree import *
+import plotly.figure_factory as ff
+import graphviz
+import matplotlib.pyplot as plt
+import japanize_matplotlib
+import joblib
+import base64
+import io
 
 st.title("ああ")
 uploaded_file = st.file_uploader("pklファイルをアップロードしてください。", type=['pkl'])
