@@ -1,24 +1,20 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-from pycaret.classification import *
-from pycaret.regression import *
-from sklearn.tree import *
-import plotly.figure_factory as ff
-import graphviz
-import matplotlib.pyplot as plt
-import japanize_matplotlib
-import joblib
-import base64
-import io
-
-st.title("ああ")
-uploaded_file = st.file_uploader("pklファイルをアップロードしてください。", type=['pkl'])
-
+from pycaret.regression import load_model, get_config
+# Streamlitアプリケーションの設定
+st.title('回帰モデルの特徴量重要度')
+# pklファイルのアップロード
+uploaded_file = st.file_uploader('pklファイルをアップロードしてください', type='pkl')
 if uploaded_file is not None:
-    with open(os.path.join("temp_model.pkl"), "wb") as f:
-        f.write(uploaded_file.getvalue())
-    model = load_model("temp_model.pkl")
-    feature_importance = model.feature_importances_
-    df_feature_importance = pd.DataFrame({'Feature': model.feature_names_, 'Importance': feature_importance})
-    st.write(df_feature_importance)
+    # アップロードされたpklファイルを読み込む
+    model = load_model(uploaded_file)
+    # 特徴量重要度を取得
+    feature_importances = model.feature_importances_
+    # 特徴量名を取得
+    feature_names = get_config('X').columns
+    # 特徴量重要度をデータフレームに変換
+    importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+    importance_df = importance_df.sort_values(by='Importance', ascending=False)
+    # 特徴量重要度を表示
+    st.write('特徴量重要度:')
+    st.dataframe(importance_df)
