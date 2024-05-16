@@ -1,29 +1,38 @@
 import streamlit as st
-import pickle
+from pycaret.classification import load_model, predict_model
+import pandas as pd
 
-# Streamlitアプリのタイトル
-st.title("Pickleファイルの読み込みと表示")
+# タイトルと説明の設定
+st.title('PyCaretモデルによる予測アプリ')
+st.write('このアプリは、PyCaretでトレーニングしたモデルを使って予測を行います。')
 
-# ファイルアップローダーを作成
-uploaded_file = st.file_uploader("Pickleファイルを選択してください", type="pkl")
+# サイドバーにユーザー入力フォームを作成
+st.sidebar.header('入力パラメータ')
 
-if uploaded_file is not None:
-    try:
-        # アップロードされたファイルの内容をバイナリで読み込み
-        file_content = uploaded_file.read()
-        data = pickle.loads(file_content)
+def user_input_features():
+    feature1 = st.sidebar.number_input('Feature 1', min_value=0.0, max_value=100.0, value=50.0)
+    feature2 = st.sidebar.number_input('Feature 2', min_value=0.0, max_value=100.0, value=50.0)
+    feature3 = st.sidebar.number_input('Feature 3', min_value=0.0, max_value=100.0, value=50.0)
+    feature4 = st.sidebar.number_input('Feature 4', min_value=0.0, max_value=100.0, value=50.0)
+    
+    data = {'Feature 1': feature1,
+            'Feature 2': feature2,
+            'Feature 3': feature3,
+            'Feature 4': feature4}
+    features = pd.DataFrame(data, index=[0])
+    return features
 
-        # データの型に応じて表示
-        if isinstance(data, dict):
-            st.write("辞書型データ:")
-            for key, value in data.items():
-                st.write(f"{key}: {value}")
-        elif isinstance(data, list):
-            st.write("リスト型データ:")
-            for item in data:
-                st.write(item)
-        else:
-            st.write("読み込まれたデータ:")
-            st.write(data)
-    except Exception as e:
-        st.error(f"ファイルの読み込みに失敗しました: {e}")
+input_df = user_input_features()
+
+# モデルの読み込み
+model = load_model('your_model_name')  # 'your_model_name'を実際のモデル名に置き換えてください
+
+# 予測の実行
+prediction = predict_model(model, data=input_df)
+
+# 結果の表示
+st.subheader('入力パラメータ')
+st.write(input_df)
+
+st.subheader('予測結果')
+st.write(prediction)
