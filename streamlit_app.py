@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pycaret.classification import load_model
+from pycaret.regression import *
 import os
 
 st.title("ああ")
