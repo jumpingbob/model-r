@@ -1,38 +1,26 @@
 import streamlit as st
-from pycaret.classification import load_model, predict_model
 import pandas as pd
+import pickle
 
-# タイトルと説明の設定
-st.title('PyCaretモデルによる予測アプリ')
-st.write('このアプリは、PyCaretでトレーニングしたモデルを使って予測を行います。')
+# モデルの.pklファイルのパス
+model_path = "your_model.pkl"
 
-# サイドバーにユーザー入力フォームを作成
-st.sidebar.header('入力パラメータ')
+# .pklファイルからモデルをロード
+with open(model_path, 'rb') as f:
+    model = pickle.load(f)
 
-def user_input_features():
-    feature1 = st.sidebar.number_input('Feature 1', min_value=0.0, max_value=100.0, value=50.0)
-    feature2 = st.sidebar.number_input('Feature 2', min_value=0.0, max_value=100.0, value=50.0)
-    feature3 = st.sidebar.number_input('Feature 3', min_value=0.0, max_value=100.0, value=50.0)
-    feature4 = st.sidebar.number_input('Feature 4', min_value=0.0, max_value=100.0, value=50.0)
-    
-    data = {'Feature 1': feature1,
-            'Feature 2': feature2,
-            'Feature 3': feature3,
-            'Feature 4': feature4}
-    features = pd.DataFrame(data, index=[0])
-    return features
+# モデルの説明変数を定義（ここでは例として、特徴の名前とそれに対応するデフォルトの値の辞書を使用）
+features = {
+    'Feature1': st.sidebar.number_input("Feature1", value=0.0),
+    'Feature2': st.sidebar.number_input("Feature2", value=0.0),
+    # 追加の特徴があればここに追加
+}
 
-input_df = user_input_features()
+# 特徴をデータフレームに変換
+input_data = pd.DataFrame([features])
 
-# モデルの読み込み
-model = load_model('your_model_name')  # 'your_model_name'を実際のモデル名に置き換えてください
+# モデルを使用して予測を行う
+prediction = model.predict(input_data)
 
-# 予測の実行
-prediction = predict_model(model, data=input_df)
-
-# 結果の表示
-st.subheader('入力パラメータ')
-st.write(input_df)
-
-st.subheader('予測結果')
-st.write(prediction)
+# 結果を表示
+st.write('Prediction:', prediction)
