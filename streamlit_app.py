@@ -1,6 +1,8 @@
+import streamlit as st
 import pandas as pd
 from pycaret.classification import load_model
 
+st.title("ああ")
 uploaded_file = st.file_uploader("pklファイルをアップロードしてください。", type=['pkl'])
 
 model = load_model(uploaded_file)
