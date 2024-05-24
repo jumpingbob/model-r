@@ -10,7 +10,9 @@ functions = [
     'x', 'y', 'z', 'x**2', 'y**2', 'z**2', 'x**3', 'y**3', 'z**3', 
     'sp.sin(x)', 'sp.sin(y)', 'sp.sin(z)', 'sp.cos(x)', 'sp.cos(y)', 'sp.cos(z)', 
     'sp.exp(x)', 'sp.exp(y)', 'sp.exp(z)', '1/x', '1/y', '1/z', 'sp.log(x)', 'sp.log(y)', 'sp.log(z)',
-    'x*y', 'x*z', 'y*z', 'x*y*z'
+    'x*y', 'x*z', 'y*z', 'x*y*z', '1/(x+y)', '1/(y+z)', '1/(x+z)', '1/(x**2 + 1)', '1/(y**2 + 1)', '1/(z**2 + 1)',
+    'x*sp.exp(x)', 'x*sp.sin(x)', 'x*sp.cos(x)', 'sp.exp(x**2)', 'sp.sin(x)*sp.cos(x)', 'sp.exp(x)*sp.sin(x)', 
+    'sp.exp(x)*sp.cos(x)', 'sp.sin(x)**2', 'sp.cos(x)**2', 'sp.tan(x)', 'sp.cot(x)'
 ]
 
 # 積分問題をランダムに生成する関数
@@ -49,3 +51,4 @@ if st.session_state['func_str']:
     # 解答を表示
     if st.button("解答を表示"):
         st.write(f"解答：$${sp.latex(st.session_state['integral'])}$$")
+
