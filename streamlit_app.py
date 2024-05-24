@@ -23,12 +23,23 @@ def solve_integral(func):
 
 st.title("積分問題生成器")
 
+# セッション状態の初期化
+if 'func_str' not in st.session_state:
+    st.session_state['func_str'] = None
+if 'func' not in st.session_state:
+    st.session_state['func'] = None
+if 'integral' not in st.session_state:
+    st.session_state['integral'] = None
+
 # 問題を生成
 if st.button("問題を生成"):
-    func_str, func = generate_problem()
-    st.write(f"次の関数の不定積分を求めよ：$${sp.latex(func)}$$")
+    st.session_state['func_str'], st.session_state['func'] = generate_problem()
+    st.session_state['integral'] = solve_integral(st.session_state['func'])
+
+# 問題を表示
+if st.session_state['func_str']:
+    st.write(f"次の関数の不定積分を求めよ：$${sp.latex(st.session_state['func'])}$$")
     
     # 解答を表示
     if st.button("解答を表示"):
-        integral = solve_integral(func)
-        st.write(f"解答：$${sp.latex(integral)}$$")
+        st.write(f"解答：$${sp.latex(st.session_state['integral'])}$$")
