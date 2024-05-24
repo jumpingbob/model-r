@@ -2,50 +2,60 @@ import streamlit as st
 import sympy as sp
 import random
 
-# シンボルを定義
+st.title("積分問題ジェネレーター")
+
+# xをシンボルとして定義
 x = sp.symbols('x')
 
-# 関数リストを定義します
-functions = [
-    'x', 'x**2', 'x**3', 'sp.sin(x)', 'sp.cos(x)', 'sp.exp(x)', '1/x', 'sp.log(x)',
-    'x*sp.exp(x)', 'x*sp.sin(x)', 'x*sp.cos(x)', 'sp.exp(x**2)', 'sp.sin(x)*sp.cos(x)', 
-    'sp.exp(x)*sp.sin(x)', 'sp.exp(x)*sp.cos(x)', 'sp.sin(x)**2', 'sp.cos(x)**2', 
-    'sp.tan(x)', 'sp.cot(x)', '1/(x**2 + 1)', '1/(x**2 + 4)', '1/(x**2 + x + 1)', 
-    'x/(x**2 + 1)', 'sp.exp(-x**2)', 'sp.exp(-x**2) * sp.cos(x)', 'sp.exp(-x**2) * sp.sin(x)'
-]
-
-# 積分問題をランダムに生成する関数
+# 問題を生成する関数
 def generate_problem():
-    func_str = random.choice(functions)
-    func = eval(func_str)
-    return func_str, func
+    problems = [
+        sp.integrate(sp.sin(x) * sp.exp(x), x),  # ∫sin(x)e^x dx
+        sp.integrate(x * sp.log(x), x),  # ∫x log(x) dx
+        sp.integrate(sp.sqrt(x**2 + 1), x),  # ∫√(x^2 + 1) dx
+        sp.integrate(x**2 / (x - 1), x),  # ∫x^2/(x-1) dx
+        sp.integrate(sp.exp(x) / (sp.exp(x) - 1), x),  # ∫e^x/(e^x - 1) dx
+        sp.integrate(1 / (x**2 + x), x),  # ∫1/(x^2 + x) dx
+        sp.integrate(sp.sin(x)**2, x),  # ∫sin^2(x) dx
+        sp.integrate(sp.cos(x)**3, x),  # ∫cos^3(x) dx
+        sp.integrate(sp.cos(3*x) * sp.cos(x), x),  # ∫cos(3x)cos(x) dx
+        sp.integrate(x * sp.exp(-x**2), x),  # ∫x e^(-x^2) dx
+    ]
+    
+    # 問題をランダムに選択
+    problem = random.choice(problems)
+    
+    return problem
 
-# 解答を表示する関数
-def solve_integral(func):
-    integral = sp.integrate(func, x)
-    return integral
-
-st.title("積分問題生成器")
-
-# セッション状態の初期化
-if 'func_str' not in st.session_state:
-    st.session_state['func_str'] = None
-if 'func' not in st.session_state:
-    st.session_state['func'] = None
-if 'integral' not in st.session_state:
-    st.session_state['integral'] = None
-
-# 問題を生成
-if st.button("問題を生成"):
-    st.session_state['func_str'], st.session_state['func'] = generate_problem()
-    st.session_state['integral'] = solve_integral(st.session_state['func'])
+# 問題を取得
+problem = generate_problem()
 
 # 問題を表示
-if st.session_state['func_str']:
-    st.write(f"次の関数の不定積分を求めよ：$${sp.latex(sp.Integral(st.session_state['func'], x))}$$")
-    
-    # 解答を表示
-    if st.button("解答を表示"):
-        st.write(f"解答：$${sp.latex(st.session_state['integral'])}$$")
+st.write("### 問題")
+st.latex(r"\int " + sp.latex(problem) + r" \, dx")
 
+# 解答を計算
+solution = sp.integrate(problem, x)
 
+# 解答を表示
+st.write("### 解答")
+st.latex(sp.latex(solution) + " + C")
+
+# ボタンを押すと新しい問題を生成
+if st.button("新しい問題を生成"):
+    problem = generate_problem()
+    st.experimental_rerun()
+additional_problems = [
+    sp.integrate((x**2 + 1)**2 / x**3, x),  # ∫(x^2 + 1)^2 / x^3 dx
+    sp.integrate(sp.cos(x) - sp.sin(x), x),  # ∫(cos(x) - sin(x)) dx
+    sp.integrate((sp.cos(x) - 1) * (sp.cos(x)**2 + sp.cos(x) + 1) / sp.cos(x)**2, x),  # ∫(cos(x) - 1)(cos^2(x) + cos(x) + 1) / cos^2(x) dx
+    sp.integrate(2*x + sp.exp(x), x),  # ∫(2x + e^x) dx
+    sp.integrate(sp.sqrt(2*x - 3), x),  # ∫√(2x - 3) dx
+    sp.integrate(x**2 / (x - 2)**2, x),  # ∫x^2 / (x - 2)^2 dx
+    sp.integrate(x * sp.sqrt(x + 2), x),  # ∫x√(x + 2) dx
+    sp.integrate(sp.exp(x) / (sp.exp(x) - 3)**2, x),  # ∫e^x / (e^x - 3)^2 dx
+    sp.integrate(sp.cos(x)**2 * sp.sin(x), x),  # ∫cos^2(x)sin(x) dx
+    sp.integrate(3*x**2 / sp.sqrt(x**3 + 2), x),  # ∫3x^2 / √(x^3 + 2) dx
+]
+
+problems.extend(additional_problems)
