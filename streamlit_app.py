@@ -46,10 +46,11 @@ st.latex(r"\int " + sp.latex(problem) + r" \, dx")
 
 # 解答を計算
 solution = sp.integrate(problem, x)
-
 # 解答を表示
-st.write("### 解答")
-st.latex(sp.latex(solution) + " + C")
+    if st.button("解答を表示"):
+        st.latex(sp.latex(solution) + " + C")
+
+
 
 # ボタンを押すと新しい問題を生成
 if st.button("新しい問題を生成"):
