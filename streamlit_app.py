@@ -21,7 +21,7 @@ def solve_integral(func):
     integral = sp.integrate(func, x)
     return integral
 
-st.title("積分問題生成器")
+st.title("積分問題生成アプリ")
 
 # セッション状態の初期化
 if 'func_str' not in st.session_state:
