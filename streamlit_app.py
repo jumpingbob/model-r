@@ -3,28 +3,26 @@ import sympy as sp
 import random
 
 # シンボルを定義
-x, y, z = sp.symbols('x y z')
+x = sp.symbols('x')
 
 # 関数リストを定義します
 functions = [
-    'x', 'y', 'z', 'x**2', 'y**2', 'z**2', 'x**3', 'y**3', 'z**3', 
-    'sp.sin(x)', 'sp.sin(y)', 'sp.sin(z)', 'sp.cos(x)', 'sp.cos(y)', 'sp.cos(z)', 
-    'sp.exp(x)', 'sp.exp(y)', 'sp.exp(z)', '1/x', '1/y', '1/z', 'sp.log(x)', 'sp.log(y)', 'sp.log(z)',
-    'x*y', 'x*z', 'y*z', 'x*y*z', '1/(x+y)', '1/(y+z)', '1/(x+z)', '1/(x**2 + 1)', '1/(y**2 + 1)', '1/(z**2 + 1)',
-    'x*sp.exp(x)', 'x*sp.sin(x)', 'x*sp.cos(x)', 'sp.exp(x**2)', 'sp.sin(x)*sp.cos(x)', 'sp.exp(x)*sp.sin(x)', 
-    'sp.exp(x)*sp.cos(x)', 'sp.sin(x)**2', 'sp.cos(x)**2', 'sp.tan(x)', 'sp.cot(x)'
+    'x', 'x**2', 'x**3', 'sp.sin(x)', 'sp.cos(x)', 'sp.exp(x)', '1/x', 'sp.log(x)',
+    'x*sp.exp(x)', 'x*sp.sin(x)', 'x*sp.cos(x)', 'sp.exp(x**2)', 'sp.sin(x)*sp.cos(x)', 
+    'sp.exp(x)*sp.sin(x)', 'sp.exp(x)*sp.cos(x)', 'sp.sin(x)**2', 'sp.cos(x)**2', 
+    'sp.tan(x)', 'sp.cot(x)', '1/(x**2 + 1)', '1/(x**2 + 4)', '1/(x**2 + x + 1)', 
+    'x/(x**2 + 1)', 'sp.exp(-x**2)', 'sp.exp(-x**2) * sp.cos(x)', 'sp.exp(-x**2) * sp.sin(x)'
 ]
 
 # 積分問題をランダムに生成する関数
 def generate_problem():
     func_str = random.choice(functions)
     func = eval(func_str)
-    variable = random.choice([x, y, z])
-    return func_str, func, variable
+    return func_str, func
 
 # 解答を表示する関数
-def solve_integral(func, variable):
-    integral = sp.integrate(func, variable)
+def solve_integral(func):
+    integral = sp.integrate(func, x)
     return integral
 
 st.title("積分問題生成器")
@@ -36,19 +34,18 @@ if 'func' not in st.session_state:
     st.session_state['func'] = None
 if 'integral' not in st.session_state:
     st.session_state['integral'] = None
-if 'variable' not in st.session_state:
-    st.session_state['variable'] = None
 
 # 問題を生成
 if st.button("問題を生成"):
-    st.session_state['func_str'], st.session_state['func'], st.session_state['variable'] = generate_problem()
-    st.session_state['integral'] = solve_integral(st.session_state['func'], st.session_state['variable'])
+    st.session_state['func_str'], st.session_state['func'] = generate_problem()
+    st.session_state['integral'] = solve_integral(st.session_state['func'])
 
 # 問題を表示
 if st.session_state['func_str']:
-    st.write(f"次の関数の不定積分を求めよ（{st.session_state['variable']}について）：$${sp.latex(st.session_state['func'])}$$")
+    st.write(f"次の関数の不定積分を求めよ：$${sp.latex(sp.Integral(st.session_state['func'], x))}$$")
     
     # 解答を表示
     if st.button("解答を表示"):
         st.write(f"解答：$${sp.latex(st.session_state['integral'])}$$")
+
 
