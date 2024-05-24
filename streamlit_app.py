@@ -2,6 +2,9 @@ import streamlit as st
 import sympy as sp
 import random
 
+# シンボルを定義
+x = sp.symbols('x')
+
 # 関数リストを定義します
 functions = [
     'x', 'x**2', 'x**3', 'sp.sin(x)', 'sp.cos(x)', 'sp.exp(x)', '1/x', 'sp.log(x)'
@@ -15,7 +18,6 @@ def generate_problem():
 
 # 解答を表示する関数
 def solve_integral(func):
-    x = sp.symbols('x')
     integral = sp.integrate(func, x)
     return integral
 
