@@ -16,16 +16,17 @@ def reverse_scoring(user_input, reverse_indices):
         user_input[i] = 6 - user_input[i]  # 1から5の範囲なので、6 - current_valueで逆にする
     return user_input
 
-# Zスコア正規化
-def z_score_scaling(user_input):
-    mean_val = np.mean(user_input)
-    std_val = np.std(user_input)
-    #st.write(f"mean_val: {mean_val}, std_val: {std_val}")  # デバッグ出力
-    if std_val == 0:
+# Robustスケーリング
+def robust_scaling(user_input):
+    median_val = np.median(user_input)
+    q75, q25 = np.percentile(user_input, [75 ,25])
+    iqr = q75 - q25  # 四分位範囲
+    #st.write(f"median_val: {median_val}, q75: {q75}, q25: {q25}, iqr: {iqr}")  # デバッグ出力
+    if iqr == 0:
         # すべての値が同じ場合、すべてのスケーリング値を0に設定
         scaled_values = [0 for _ in user_input]
     else:
-        scaled_values = [(x - mean_val) / std_val for x in user_input]
+        scaled_values = [(x - median_val) / iqr for x in user_input]
     #st.write(f"scaled_values: {scaled_values}")  # デバッグ出力
     return scaled_values
 
@@ -106,9 +107,9 @@ def main():
 
     st.write("Values after applying reverse scoring:", user_input)
 
-    scaled_values = z_score_scaling(user_input)
+    scaled_values = robust_scaling(user_input)
 
-    st.write("Z-score normalized values:", scaled_values)
+    st.write("Robust scaled values:", scaled_values)
 
     stress_level = calculate_stress_level(scaled_values, feature_importances)
 
