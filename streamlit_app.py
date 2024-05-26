@@ -16,23 +16,21 @@ def reverse_scoring(user_input, reverse_indices):
         user_input[i] = 6 - user_input[i]  # 1から5の範囲なので、6 - current_valueで逆にする
     return user_input
 
-# Min-Max正規化
-def min_max_scaling(user_input):
-    min_val = np.min(user_input)
-    max_val = np.max(user_input)
-    #st.write(f"min_val: {min_val}, max_val: {max_val}")  # デバッグ出力
-    if min_val == max_val:
-        # すべての値が同じ場合、すべてのスケーリング値を0.5に設定
-        scaled_values = [0.5 for _ in user_input]
+# Zスコアの計算
+def z_score_scaling(user_input):
+    mean_val = np.mean(user_input)
+    std_val = np.std(user_input)
+    if std_val == 0:
+        # 標準偏差が0の場合、すべてのZスコアを0に設定
+        z_scores = [0 for _ in user_input]
     else:
-        scaled_values = [(x - min_val) / (max_val - min_val) for x in user_input]
-    #st.write(f"scaled_values: {scaled_values}")  # デバッグ出力
-    return scaled_values
+        z_scores = [(x - mean_val) / std_val for x in user_input]
+    return z_scores
 
-# ストレスレベルを計算
-def calculate_stress_level(scaled_values, feature_importances):
-    stress_level = np.dot(scaled_values, feature_importances)
-    #st.write(f"stress_level: {stress_level}")  # デバッグ出力
+# ストレスレベルを計算（要素とは独立に計算）
+def calculate_stress_level(z_scores):
+    # ストレスレベルはZスコアの合計（絶対値）で計算
+    stress_level = np.sum(np.abs(z_scores))
     return stress_level
 
 # 最も高い項目を特定する
@@ -73,27 +71,6 @@ def main():
         "bullying (外部からの圧力的な被害)"
     ]
 
-    # 各質問項目の特徴量重要度
-    feature_importances = np.array([
-        0.057802,  # anxiety level
-        0.057088,  # self-esteem
-        0.039464,  # depression
-        0.081881,  # headache
-        0.088141,  # sleep quality
-        0.023011,  # breathing problem
-        0.042920,  # noise level
-        0.026199,  # living conditions
-        0.056138,  # safety
-        0.072368,  # basic needs
-        0.075147,  # academic performance
-        0.035174,  # study load
-        0.051709,  # teacher-student relationship
-        0.067962,  # future career concerns
-        0.048509,  # peer pressure
-        0.074542,  # extracurricular activities
-        0.101947   # bullying
-    ])
-
     user_input = get_user_input(features)
 
     st.session_state.user_inputs = user_input  # 入力データをセッション状態に保存
@@ -106,24 +83,24 @@ def main():
 
     st.write("Values after applying reverse scoring:", user_input)
 
-    scaled_values = min_max_scaling(user_input)
+    z_scores = z_score_scaling(user_input)
 
-    st.write("Min-Max normalized values:", scaled_values)
+    st.write("Z-scores:", z_scores)
 
-    stress_level = calculate_stress_level(scaled_values, feature_importances)
+    stress_level = calculate_stress_level(z_scores)
 
     stress_level_rounded = round(stress_level, 2)  # 小数第二位まで四捨五入
 
     st.write("ストレスレベル:", stress_level_rounded)
 
-    highest_features = find_top_highest_features(scaled_values, features, top_n=3)
+    highest_features = find_top_highest_features(z_scores, features, top_n=3)
     st.write("ストレス要因上位3項目:")
     for feature, value in highest_features:
         st.write(f"{feature}: {value}")
 
     st.write("以下は、ユーザーのストレス要因をレーダーチャートで視覚化したものです。")
     fig = px.line_polar(
-        r=scaled_values + scaled_values[:1],  # 周期的に閉じるために、最初の値を最後に追加
+        r=z_scores + z_scores[:1],  # 周期的に閉じるために、最初の値を最後に追加
         theta=features + features[:1],  # 周期的に閉じるために、最初の項目を最後に追加
         line_close=True,
         title="ストレス要因",
