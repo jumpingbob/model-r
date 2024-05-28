@@ -9,31 +9,54 @@ x = sp.symbols('x')
 
 # 問題を生成する関数
 def generate_problem():
-    problems = [
-        sp.sin(x) * sp.exp(x),  # ∫sin(x)e^x dx
-        x * sp.log(x),  # ∫x log(x) dx
-        sp.sqrt(x**2 + 1),  # ∫√(x^2 + 1) dx
-        x**2 / (x - 1),  # ∫x^2/(x-1) dx
-        sp.exp(x) / (sp.exp(x) - 1),  # ∫e^x/(e^x - 1) dx
-        1 / (x**2 + x),  # ∫1/(x^2 + x) dx
-        sp.sin(x)**2,  # ∫sin^2(x) dx
-        sp.cos(x)**3,  # ∫cos^3(x) dx
-        sp.cos(3*x) * sp.cos(x),  # ∫cos(3x)cos(x) dx
-        x * sp.exp(-x**2),  # ∫x e^(-x^2) dx
-        (x**2 + 1)**2 / x**3,  # ∫(x^2 + 1)^2 / x^3 dx
-        sp.cos(x) - sp.sin(x),  # ∫(cos(x) - sin(x)) dx
-        (sp.cos(x) - 1) * (sp.cos(x)**2 + sp.cos(x) + 1) / sp.cos(x)**2,  # ∫(cos(x) - 1)(cos^2(x) + cos(x) + 1) / cos^2(x) dx
-        2*x + sp.exp(x),  # ∫(2x + e^x) dx
-        sp.sqrt(2*x - 3),  # ∫√(2x - 3) dx
-        x**2 / (x - 2)**2,  # ∫x^2 / (x - 2)^2 dx
-        x * sp.sqrt(x + 2),  # ∫x√(x + 2) dx
-        sp.exp(x) / (sp.exp(x) - 3)**2,  # ∫e^x / (e^x - 3)^2 dx
-        sp.cos(x)**2 * sp.sin(x),  # ∫cos^2(x)sin(x) dx
-        3*x**2 / sp.sqrt(x**3 + 2),  # ∫3x^2 / √(x^3 + 2) dx
+    # 基本的な関数
+    basic_functions = [
+        sp.sin(x), sp.cos(x), sp.tan(x),
+        sp.exp(x), sp.log(x), sp.sqrt(x),
+        x, x**2, x**3
     ]
-    
-    # 問題をランダムに選択
-    problem = random.choice(problems)
+
+    # 複合関数
+    composite_functions = [
+        sp.sin(x) * sp.exp(x),
+        x * sp.log(x),
+        sp.sqrt(x**2 + 1),
+        x**2 / (x - 1),
+        sp.exp(x) / (sp.exp(x) - 1),
+        1 / (x**2 + x),
+        sp.sin(x)**2,
+        sp.cos(x)**3,
+        sp.cos(3*x) * sp.cos(x),
+        x * sp.exp(-x**2),
+        (x**2 + 1)**2 / x**3,
+        sp.cos(x) - sp.sin(x),
+        (sp.cos(x) - 1) * (sp.cos(x)**2 + sp.cos(x) + 1) / sp.cos(x)**2,
+        2*x + sp.exp(x),
+        sp.sqrt(2*x - 3),
+        x**2 / (x - 2)**2,
+        x * sp.sqrt(x + 2),
+        sp.exp(x) / (sp.exp(x) - 3)**2,
+        sp.cos(x)**2 * sp.sin(x),
+        3*x**2 / sp.sqrt(x**3 + 2),
+        sp.sin(x) / x,
+        sp.exp(x**2),
+        sp.sqrt(1 - x**2),
+        x**3 * sp.exp(-x**2),
+        sp.log(x) / x,
+        sp.sin(x)**3 * sp.cos(x),
+        1 / sp.sqrt(1 - x**2),
+        sp.tan(x),
+    ]
+
+    # 無作為に基本的な関数や複合関数を選択
+    basic_prob = random.choice(basic_functions)
+    composite_prob = random.choice(composite_functions)
+
+    # 確率で基本関数と複合関数を選択
+    if random.random() < 0.5:
+        problem = basic_prob
+    else:
+        problem = composite_prob
     
     return problem
 
